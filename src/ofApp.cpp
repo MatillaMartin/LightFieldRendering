@@ -31,10 +31,10 @@ void ofApp::setup(){
 	}
 
 	// create quad
-	m_quad.addVertex(ofDefaultVertexType(glm::vec3(0, 0, 0)));
-	m_quad.addVertex(ofDefaultVertexType(glm::vec3(1, 0, 0)));
-	m_quad.addVertex(ofDefaultVertexType(glm::vec3(1, 1, 0)));
 	m_quad.addVertex(ofDefaultVertexType(glm::vec3(0, 1, 0)));
+	m_quad.addVertex(ofDefaultVertexType(glm::vec3(1, 1, 0)));
+	m_quad.addVertex(ofDefaultVertexType(glm::vec3(1, 0, 0)));
+	m_quad.addVertex(ofDefaultVertexType(glm::vec3(0, 0, 0)));
 
 	m_quad.addTexCoord(ofDefaultTexCoordType(0, 0));
 	m_quad.addTexCoord(ofDefaultTexCoordType(1, 0));
@@ -78,8 +78,8 @@ void ofApp::draw(){
 		auto & image = m_images[i];
 		m_shader.begin();
 		m_shader.setUniform3f("center", center);
-		m_shader.setUniform1f("aperture", m_aperture);
-		//m_shader.setUniformTexture("texture", image, 5);
+		m_shader.setUniform1f("aperture", config.aperture);
+		m_shader.setUniformTexture("texture", image, 5);
 			m_quad.draw();
 		m_shader.end();
 	}

@@ -27,7 +27,6 @@ private:
 	ofTexture m_weight;
 	ofVboMesh m_quad;
 	ofShader m_shader;
-	float m_aperture;
 	ofEasyCam m_view;
 
 	struct Data
