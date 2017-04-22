@@ -3,7 +3,7 @@
 // these are for the programmable pipeline system
 uniform mat4 modelViewProjectionMatrix;
 
-uniform vec3 center;
+uniform mat4 center;
 uniform float aperture;
 
 in vec4 position;
@@ -18,9 +18,9 @@ void main()
 
 	vec4 modifiedPosition = position;
 
-	modifiedPosition -= 0.5;
-	modifiedPosition *= aperture * 2.0;
-	modifiedPosition.xy += center.xy;
+	modifiedPosition.xy -= 0.5;
+	modifiedPosition.xy *= aperture * 2.0;
+	modifiedPosition.xy += center[3].xy / center[3].w;
 
 	gl_Position = modelViewProjectionMatrix * modifiedPosition;
 }

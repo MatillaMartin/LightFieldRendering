@@ -23,7 +23,7 @@ public:
 		
 private:
 	vector<ofImage> m_images;
-	vector<ofPoint> m_cameraCenters;
+	vector<glm::mat4> m_cameras;
 	ofTexture m_weight;
 	ofVboMesh m_quad;
 	ofShader m_shader;

@@ -56,7 +56,9 @@ void ofApp::setup(){
 	{
 		for (unsigned int x = 0; x < data.cameraCols; x++)
 		{
-			m_cameraCenters.emplace_back(x * data.baseline, -(y * data.baseline), 0.0f); // -y because we want (top,left):(0,0)
+			ofCamera cam;
+			cam.setPosition(x * data.baseline, -(y * data.baseline), 0.0f); // -y because we want (top,left):(0,0)
+			m_cameras.emplace_back(glm::inverse(cam.getModelViewProjectionMatrix(ofRectangle(0,0,1,1))));
 		}
 	}
 }
@@ -71,15 +73,14 @@ void ofApp::draw(){
 	m_view.begin();
 	ofClear(0);
 	ofDrawAxis(10);
-	ofSetColor(127);
 	for (unsigned int i = 0; i < data.nCameras; i++)
 	{
-		auto & center = m_cameraCenters[i]; // alias
+		auto & center = m_cameras[i]; // alias
 		auto & image = m_images[i];
 		m_shader.begin();
-		m_shader.setUniform3f("center", center);
+		m_shader.setUniformMatrix4f("center", center);
 		m_shader.setUniform1f("aperture", config.aperture);
-		m_shader.setUniformTexture("texture", image, 5);
+		m_shader.setUniformTexture("texture0", image, 0);
 			m_quad.draw();
 		m_shader.end();
 	}
