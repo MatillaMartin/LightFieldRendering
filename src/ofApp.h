@@ -24,10 +24,13 @@ public:
 private:
 	vector<ofImage> m_images;
 	vector<glm::mat4> m_cameras;
+	vector<ofPoint> m_cameraCenters;
 	ofTexture m_weight;
 	ofVboMesh m_quad;
 	ofShader m_shader;
 	ofEasyCam m_view;
+
+	ofCamera m_render;
 
 	struct Data
 	{
@@ -41,6 +44,8 @@ private:
 	struct Config
 	{
 		float aperture;
+		ofPoint focalPoint;
+		glm::vec3 focalNormal;
 	};
 	Config config;
 };

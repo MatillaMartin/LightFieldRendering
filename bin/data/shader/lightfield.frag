@@ -8,4 +8,5 @@ void main()
 {
 	//outputColor = vec4(1, 1, 1, 1);
 	outputColor = vec4(texture(texture0, texCoordVarying).xyz, 1);
+	//outputColor = vec4(texCoordVarying.x, texCoordVarying.y, 0,1);
 }
