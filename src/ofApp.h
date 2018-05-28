@@ -30,14 +30,14 @@ private:
 	ofShader m_shader;
 	ofEasyCam m_view;
 
-	ofCamera m_render;
-
 	struct Data
 	{
 		unsigned int cameraCols;
 		unsigned int cameraRows;
 		unsigned int nCameras;
 		float baseline;
+		float sensorHeight;
+		float focalLength;
 	};
 	Data data;
 

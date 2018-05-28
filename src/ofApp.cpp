@@ -11,11 +11,11 @@ void ofApp::setup(){
 	data.cameraRows = 9;
 	data.nCameras = data.cameraCols * data.cameraRows;
 	data.baseline = 6.0f; // in mm
-
+	data.sensorHeight = 35; // in mm
+	data.focalLength = 100; // in mm
 	// hardcoded options
-	config.aperture = 3.0f;
-	m_view.setDistance(15);
-	config.focalPoint = ofPoint(0, 0, -5);
+	config.aperture = 1.0f;
+	config.focalPoint = ofPoint(0, 0, -1.14e4); // in mm
 	config.focalNormal = glm::vec3(0, 0, -1);
 
 	// load images
@@ -62,12 +62,18 @@ void ofApp::setup(){
 		{
 			ofCamera cam;
 			cam.setPosition(x * data.baseline, -(y * data.baseline), 0.0f); // -y because we want (top,left):(0,0)
+			float fov = 2.0f * atan((0.5*data.sensorHeight) / data.focalLength) * RAD_TO_DEG;
+			cam.setFov(fov);
+
 			m_cameraCenters.emplace_back(cam.getPosition());
 			m_cameras.emplace_back(cam.getModelViewProjectionMatrix(ofRectangle(0,0,1,1)));
 		}
 	}
 
-	m_render.setPosition(0, 0, 15);
+	m_view.setDistance(200);
+	m_view.setFov(20);
+	m_view.setNearClip(0.01f);
+	m_view.setFarClip(1000.0f);
 }
 
 //--------------------------------------------------------------
@@ -80,7 +86,9 @@ void ofApp::draw(){
 	m_view.begin();
 	ofClear(20);
 	ofDrawAxis(10);
-	
+	ofEnableAlphaBlending();
+	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+
 	for (unsigned int i = 0; i < data.nCameras; i++)
 	{
 		auto & center = m_cameraCenters[i]; // alias
@@ -95,13 +103,12 @@ void ofApp::draw(){
 		m_shader.setUniform3f("focalPoint", config.focalPoint);
 		m_shader.setUniform3f("focalNormal", config.focalNormal);
 		m_shader.setUniformMatrix4f("mfd", mfd);
+		m_shader.setUniform1f("baseline", data.baseline);
 		m_shader.setUniform1f("aperture", config.aperture);
 		m_shader.setUniformTexture("texture0", image, 0);
 			m_quad.draw();
 		m_shader.end();
 	}
-
-	m_render.draw();
 
 	m_view.end();
 }
@@ -119,18 +126,27 @@ void ofApp::keyPressed(int key){
 
 	if (key == OF_KEY_LEFT)
 	{
-		config.aperture -= 0.1f;
+		config.aperture -= 1.0f;
 	}
 	if (key == OF_KEY_RIGHT)
 	{
-		config.aperture += 0.1f;
+		config.aperture += 1.0f;
 	}
 	if (key == OF_KEY_UP)
 	{
+		if(ofGetKeyPressed(OF_KEY_LEFT_SHIFT))
+		{
+			config.focalPoint.z -= 1000.0f;
+		}
 		config.focalPoint.z -= 10.0f;
 	}
+	
 	if (key == OF_KEY_DOWN)
 	{
+		if (ofGetKeyPressed(OF_KEY_LEFT_SHIFT))
+		{
+			config.focalPoint.z += 1000.0f;
+		}
 		config.focalPoint.z += 10.0f;
 	}
 }

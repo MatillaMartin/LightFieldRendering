@@ -1,4 +1,4 @@
-#version 150
+#version 130
 
 // these are for the programmable pipeline system
 uniform mat4 modelViewProjectionMatrix;
@@ -11,11 +11,14 @@ uniform vec3 center;
 uniform float aperture;
 uniform vec3 focalPoint;
 uniform vec3 focalNormal;
+uniform float baseline;
 
 in vec4 position;
 in vec2 texcoord;
 
+out vec2 projectedtexCoordVarying;
 out vec2 texCoordVarying;
+out float overlap;
 
 vec3 projectToPlane(vec3 point, vec3 origin, vec3 planePoint, vec3 planeNormal)
 {
@@ -30,13 +33,15 @@ void main()
 {	
 	// send texture
 	texCoordVarying = texcoord;
+	// send overlap
+	overlap = aperture;
 
 	vec4 modifiedPosition = position;
 	vec4 focalPlane = position;
 
 	// place in center, with aperture
 	modifiedPosition.xy -= 0.5;
-	modifiedPosition.xy *= aperture * 2.0;
+	modifiedPosition.xy *= aperture * baseline;
 	modifiedPosition.xy += center.xy;
 
 	// push back to focal plane
@@ -50,7 +55,7 @@ void main()
 	cameraScreen.x = (cameraScreen.x + 1) / 2;
 	cameraScreen.y = (1 - cameraScreen.y) / 2;
 
-	texCoordVarying = cameraScreen.xy;
+	projectedtexCoordVarying = cameraScreen.xy;
 
 	gl_Position = modelViewProjectionMatrix * modifiedPosition;
 }
